@@ -49,7 +49,9 @@ const SearchBox = () => {
     <div className="search-container">
       <Form>
         <Row>
-          <Form.Label className="fs-4 mb-2">Search your city</Form.Label>
+          <Form.Label className="fs-4 mb-2">
+            Search your city/address
+          </Form.Label>
         </Row>
         <Row>
           <Col xs="8">

@@ -8,6 +8,7 @@ const WeatherData = () => {
   const { temp, pressure, humidity } = weatherInfo.main;
   const [weatherDetails] = weatherInfo.weather;
 
+  //For converting the first letter to Caps
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
@@ -16,7 +17,8 @@ const WeatherData = () => {
     <div className="weather-data-container">
       <div className="fs-2 my-2">{name}</div>
       <div style={{ fontSize: "50px" }}>
-        {(temp - 273.15).toFixed(2)}
+        {(temp - 273.15).toFixed(2)}{" "}
+        {/*converted Kelvin to celsius set the decimal palces to 2 */}
         <span className="fs-5"> °C</span>
         <span className="fs-3 ms-4">
           {capitalizeFirstLetter(weatherDetails.description)}

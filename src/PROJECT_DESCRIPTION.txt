@@ -23,3 +23,5 @@
 --> weather-data component:
      -displays the weatherData using weatherInfo Context Value  
      -check inside for more info    
+
+--> dependency:react-bootstrap-typeahead, mapbox-gl,react-bootstrap     
