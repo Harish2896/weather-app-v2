@@ -1,49 +1,73 @@
-import "./search-box.styles.css";
-import { Form, Row, Col, Button } from "react-bootstrap";
-import { useState, useContext } from "react";
+// used npm install to install react-bootstrap-typeahead
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+
+import { useContext, useState } from "react";
 import { SetCityContext } from "../../context/setcity-context/setcity.context";
 
+import { Form, Row, Col } from "react-bootstrap";
+
 const SearchBox = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const { setLatitude, setLongitude } = useContext(SetCityContext); //from context
 
-  const { setCity } = useContext(SetCityContext);
+  const [isLoading, setIsLoading] = useState(false); //for when loading for suggestions
+  const [options, setOptions] = useState([]); //for suggestions in dropDown
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-    setCity(searchQuery);
-    setSearchQuery("");
+  // Get lat and lon from geocode api(api key valid upto Nov18,2022)
+  const handleSearch = (searchString) => {
+    setIsLoading(true); //creates a loading animation in search-box
+    const getSuggestions = async () => {
+      const response = await fetch(
+        `https://api.geocode.earth/v1/autocomplete?api_key=ge-0ccec9536e10b499&text=${searchString}`
+      );
+      const { features } = await response.json();
+      //console log features for clear understanding....
+      // note:features is array after destructuring from response.json
+      setOptions(
+        features.map((element) => {
+          return {
+            label: element.properties.label,
+            coordinates: element.geometry.coordinates,
+          };
+        })
+      );
+    };
+    getSuggestions(); // called the function here
+    setIsLoading(false);
   };
 
-  const changeHandler = async (event) => {
-    setSearchQuery(event.target.value);
+  //after selecting the suggestions this will run and set the long and lat
+  const onSelectHandler = ([selectedValue]) => {
+    if (selectedValue) {
+      const { label, coordinates } = selectedValue;
+      console.log(label, coordinates); //console logged the city name and coordinates
+      setLongitude(coordinates[0]); //coordinates is a array
+      setLatitude(coordinates[1]);
+    }
   };
 
   return (
-    <Form onSubmit={submitHandler}>
-      <Row>
-        <Form.Label
-          className="text-center"
-          style={{ width: "50%", fontSize: "1.2rem" }}
-        >
-          Search your city
-        </Form.Label>
-      </Row>
-      <Row>
-        <Col>
-          <Form.Control
-            name="search"
-            type="search"
-            onChange={changeHandler}
-            value={searchQuery}
-          />
-        </Col>
-        <Col>
-          <Button type="submit" variant="dark">
-            Search
-          </Button>
-        </Col>
-      </Row>
-    </Form>
+    <div className="search-container">
+      <Form>
+        <Row>
+          <Form.Label className="fs-4 mb-2">Search your city</Form.Label>
+        </Row>
+        <Row>
+          <Col xs="8">
+            {/*this component helps to load suggestion by setting the values
+             */}
+            <AsyncTypeahead
+              id="search"
+              isLoading={isLoading}
+              onSearch={handleSearch}
+              options={options}
+              placeholder="search your city/place"
+              onChange={onSelectHandler}
+              className="mb-4"
+            />
+          </Col>
+        </Row>
+      </Form>
+    </div>
   );
 };
 

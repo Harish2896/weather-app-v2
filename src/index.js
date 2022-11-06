@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from "./App";
 import SetCityContextsProvider from "./context/setcity-context/setcity.context";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
